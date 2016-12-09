@@ -16,7 +16,7 @@ $(document).ready(function () {
     //Example
     $('.hillPager').hillPager({
         classPager: 'pager', //class of pager 
-        itemToShow: 3, // Item to show x page 
+        itemToShow: 1, // Item to show x page 
         goToFirst: true, // Btn go to first page 
         goToLast: true, // Btn go to last page 
         next: true, // Btn go to next page 
@@ -27,8 +27,9 @@ $(document).ready(function () {
         json: {
                 "on":true,
                 "action":"test.json", //path of json to load 
+                "key_list_response":"list_test",
+                "key_count_response":"count_test",
                 "callback":function(pager,data){
-                    console.log('Callback JSON Request custom');
                     $('.loader-ajax').fadeOut('slow');
                     
                     pager.html('');
@@ -40,30 +41,6 @@ $(document).ready(function () {
                     pager.append(html);
                 }
         }
-        /*
-        onChangePage: function (page,itemToShow,callback) {            
-            // example call url 
-            var start = page * itemToShow,
-                limit = itemToShow;
-                        
-            console.log('onChangePage page : ' + page + ' | start : '+start + ' limit:'+limit);
-    
-            // example call
-            $.getJSON("test.json").success(function (result) {
-                // example success
-                $('.loader-ajax').fadeOut('slow');
-                var list = [];
-                $.each(result.list, function (i, field) {
-                    if (i >= parseInt(start) && i <= parseInt(limit)) {
-                        list.push(field);
-                    }
-                });
-                console.dir(list);
-                //Inserisci i dati nel html + fetch 
-                callback(list,page);
-            });
-        }
-        */
     });
     
    

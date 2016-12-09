@@ -1,5 +1,5 @@
 {
-    "list": [
+    "list_test": [
         {"title" : "Titolo 1"},
         {"title" : "Titolo 2"},
         {"title" : "Titolo 3"},
@@ -21,5 +21,5 @@
         {"title" : "Titolo 19"},
         {"title" : "Titolo 20"}
     ],
-    "count":20
+    "count_test":20
 }

@@ -27,6 +27,7 @@
         var defaultOptions = {
             classPager: 'pager', //you can define the class of pager 
             itemToShow: 3, // Item to show x page 
+            maxBtnToShow : 2, //Max quantity of button showed
             goToFirst: true, // Btn go to first page 
             goToLast: true, // Btn go to last page 
             next: true, // Btn go to next page 
@@ -43,6 +44,8 @@
             json: {
                 "on":true,
                 "action":"test.json", //path of json to load 
+                "key_list_response":"list", //key of response list , default (result.LIST)
+                "key_count_response":"count", //key of response count , default (result.COUNT)
                 "callback":function(){
                     console.log('Callback Default JSON Request custom');
                 }
@@ -67,6 +70,14 @@
         var getAction = function(){
             return isAjax() ? pagers.getOptions().ajax.action 
                             : pagers.getOptions().json.action;
+        };
+        var getKeyListResponse = function(){
+            return isAjax() ? pagers.getOptions().ajax.key_list_response 
+                            : pagers.getOptions().json.key_list_response;
+        };
+        var getKeyCountResponse = function(){
+            return isAjax() ? pagers.getOptions().ajax.key_count_response 
+                            : pagers.getOptions().json.key_count_response;
         };
         var callCustomCallback = function(pagers,data){
             return isAjax() ? pagers.getOptions().ajax.callback(pagers,data)
@@ -110,6 +121,13 @@
         var getIndexPage = function(page){
             return parseInt(page.data('id'));
         };
+        // set changePage event onclick
+        var setActionToBtnPage = function(btn){
+            btn.off("click");
+            btn.on("click", function () {
+                 pagers.changePage(getIndexPage($(this)));
+            });
+        };
         
         //Logic setting buttons of pager:
         //count : tot items
@@ -127,6 +145,12 @@
             if (goToFirst && goToFirstBtn.length == 0) {
                 getButtonPager().append('<button class="first">FIRST</button>');
                 goToFirstBtn = getButtonPager().children('.first');
+                
+                //action
+                goToFirstBtn.off("click");
+                goToFirstBtn.on("click", function () {
+                     pagers.changePage(0);
+                });
             }
             currentPage == 0 ? disableBtn(goToFirstBtn) : enableBtn(goToFirstBtn);
             
@@ -135,6 +159,12 @@
             if (prev && prevBtn.length == 0) {
                 getButtonPager().append('<button class="prev">PREV</button>');
                 prevBtn = getButtonPager().children('.prev');
+                
+                //action
+                prevBtn.off("click");
+                prevBtn.on("click", function () {
+                     pagers.changePage(currentPage-1);
+                });
             }
             currentPage == 0 ? disableBtn(prevBtn) : enableBtn(prevBtn);
 
@@ -146,17 +176,16 @@
                 
                 if(!existPage(page)){
                     getButtonPager().append(page);
-
-                    //!!!!!
-                    page.off("click");
-                    page.on("click",function(){
-                        pagers.changePage(getIndexPage($(this)));
-                    });
+                    setActionToBtnPage(page);
                 }
                 
                 //set style current page
                 page = $('[data-id="'+getIndexPage(page)+'"]');
-                numPagina == currentPage ? setCurrentPageStyle(page) : unsetCurrentPageStyle(page);
+                if(numPagina == currentPage){
+                    setCurrentPageStyle(page);
+                }else{
+                    unsetCurrentPageStyle(page);
+                }
             }
 
             //3) go to next page
@@ -164,6 +193,12 @@
             if (next && nextBtn.length == 0) {
                 getButtonPager().append('<button class="next">NEXT</button>');
                 nextBtn = getButtonPager().children('.next');
+                
+                //action
+                nextBtn.off("click");
+                nextBtn.on("click", function () {
+                     pagers.changePage(currentPage+1);
+                });
             }
             currentPage == totPages-1 ? disableBtn(nextBtn) : enableBtn(nextBtn);
             
@@ -172,6 +207,12 @@
             if (goToLast && goToLastBtn.length == 0) {
                 getButtonPager().append('<button class="goToLast">LAST</button>');
                 goToLastBtn = getButtonPager().children('.goToLast');
+                
+                //action
+                goToLastBtn.off("click");
+                goToLastBtn.on("click", function () {
+                     pagers.changePage(totPages-1);
+                });
             }
             currentPage == totPages-1 ? disableBtn(goToLastBtn) : enableBtn(goToLastBtn);
         };
@@ -196,12 +237,7 @@
         };
         
         var callbackRequest = function(data,count,currentPage){
-            console.log('CallbackRequest');
-            console.dir(data);
-            console.log(count);
-            
             callCustomCallback(pagers,data);
-            
             //Crea Pager
             setButtonPager(currentPage,count);
         };
@@ -217,20 +253,30 @@
             
             var start = getStartRequest(page);
             var limit = getLimitRequest(page);
-            console.log('page index : ' + page);
-            console.log('s: ' + start + ' -  l: ' + limit);
             
             if(isJson()){
                 //"list" : list of items
                 //"count" : count of all items not filtered
                 $.getJSON(getAction()).success(function (result) {
-                    var list = [];
-                    $.each(result.list, function (i, field) {
-                        if (i >= parseInt(start) && i <= parseInt(limit)) {
-                            list.push(field);
+                    if(!result[getKeyCountResponse()]){
+                       console.log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
+                    }else if(!result[getKeyListResponse()]){
+                       console.log('Error : Miss "'+getKeyListResponse()+'" params in your response data'); 
+                    }else{
+                        var list = [];
+                        $.each(result[getKeyListResponse()], function (i, field) {
+                            if (i >= parseInt(start) && i <= parseInt(limit)) {
+                                list.push(field);
+                            }
+                        });
+                        callbackRequest(list,result[getKeyCountResponse()],page); 
+                        
+                        if(pagers.getOptions().itemToShow > result[getKeyCountResponse()]){
+                           console.log('Notice : "itemToShow" > Response list length'); 
+                        }else if(pagers.getOptions().itemToShow == 0){
+                           console.log('"itemToShow" is set to 0'); 
                         }
-                    });
-                    callbackRequest(list,result.count,page);
+                    }
                 });
             }else if(isAjax()){
                 
