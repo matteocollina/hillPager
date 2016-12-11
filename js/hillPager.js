@@ -33,6 +33,7 @@
             next: true, // Btn go to next page 
             prev: true, // Btn go to previous page 
             pageStart: 0, //index of default page start (from 0)
+            pageOf: {on:true,"page":"Page","of":"Of"}, //if you want to show page x of x
             ajax: {
                 "on":false,
                 "action":"/",
@@ -129,16 +130,27 @@
             });
         };
         
+        //remove all buttons
+        var resetButtonPager = function (){
+            getButtonPager().children('.first,.prev,.next,.goToLast,.page,.other').remove();
+        };
         //Logic setting buttons of pager:
         //count : tot items
         //currentPage : from 0 to count-1
+        /*
+         * 1)delete all btns 
+         * 2)re-add btns with logic max btns
+         */
         var setButtonPager = function (currentPage,count) {
+            resetButtonPager();
+            
             var goToFirst = pagers.getOptions().goToFirst,
                     goToLast = pagers.getOptions().goToLast,
                     next = pagers.getOptions().next,
                     prev = pagers.getOptions().prev;
             
-            var totPages = getCountPages(count);
+            var totPages = getCountPages(count),
+                maxBtnShow = pagers.getOptions().maxBtnToShow;
 
             //1) go to first page btn
             var goToFirstBtn = getButtonPager().children('.first');
@@ -168,18 +180,45 @@
             }
             currentPage == 0 ? disableBtn(prevBtn) : enableBtn(prevBtn);
 
+
             //pages
+            var countTmpMaxBtnShow = 0;
             for (var i = 0; i < totPages; i++) {
                 var numPagina = i,
                         titlePagina = i + 1;
-                var page = $('<button class="page" data-id="' + numPagina + '">' + titlePagina + '</button>');
                 
+                //SET ... on start
+                /*
+                var otherPrevBtn = getButtonPager().children('.other-prev');
+                if(numPagina == 0 && otherPrevBtn.length == 0){
+                    var otherPrev = $('<button class="other other-prev">...</button>');
+                    getButtonPager().append(otherPrev);
+                    otherPrevBtn = getButtonPager().children('.other-prev');
+                }
+                */
+               
+               //maxbtns = 3 , page current : 6 => 5 (6) 7
+               //se maxbtns >= tot pages
+               //se prima o ultima non prender l intervallo
+                
+                //if(numPagina == 0)
+                var page = $('<button class="page" data-id="' + numPagina + '">' + titlePagina + '</button>');
                 if(!existPage(page)){
                     getButtonPager().append(page);
                     setActionToBtnPage(page);
                 }
                 
-                //set style current page
+                //SET ... on end
+                /*
+                var otherPrevNext = getButtonPager().children('.other-next');
+                if(numPagina == totPages-1 && otherPrevNext.length == 0){
+                    var otherNext = $('<button class="other other-next">...</button>');
+                    getButtonPager().append(otherNext);
+                    otherPrevNext = getButtonPager().children('.other-next');
+                }
+                */
+                
+                //SET Style current page
                 page = $('[data-id="'+getIndexPage(page)+'"]');
                 if(numPagina == currentPage){
                     setCurrentPageStyle(page);
@@ -240,6 +279,16 @@
             callCustomCallback(pagers,data);
             //Crea Pager
             setButtonPager(currentPage,count);
+            
+            if(pagers.getOptions().pageOf.on){
+                var pageTitle = pagers.getOptions().pageOf.page,
+                    pageOf = pagers.getOptions().pageOf.of   
+                var pageOfPar = getButtonPager().children('.pageOf');
+                if(pageOfPar.length == 0){
+                    var text = pageTitle + ' ' + (currentPage+1) + ' ' + pageOf + ' ' + count;
+                    getButtonPager().append('<p class="pageOf">'+text+'</p>');
+                }
+            }
         };
 
         

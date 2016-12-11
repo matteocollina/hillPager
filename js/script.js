@@ -21,6 +21,7 @@ $(document).ready(function () {
         goToLast: true, // Btn go to last page 
         next: true, // Btn go to next page 
         prev: true, // Btn go to previous page 
+        pageOf: {on:true,"page":"Pagina","of":"di"},
         ajax: {
                 "on":false,
         }, 
