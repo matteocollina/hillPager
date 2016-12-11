@@ -72,6 +72,9 @@
             return isAjax() ? pagers.getOptions().ajax.action 
                             : pagers.getOptions().json.action;
         };
+        var getDataAjax = function(){
+            return pagers.getOptions().ajax.data;
+        };
         var getKeyListResponse = function(){
             return isAjax() ? pagers.getOptions().ajax.key_list_response 
                             : pagers.getOptions().json.key_list_response;
@@ -317,7 +320,23 @@
                     }
                 });
             }else if(isAjax()){
-                
+                $.ajax(
+                        {
+                            method: "POST",
+                            url: getAction(),
+                            data: getDataAjax()
+                        }
+                ).done(function (data) {
+                    if(!data[getKeyCountResponse()]){
+                       console.log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
+                    }else if(!data[getKeyListResponse()]){
+                       console.log('Error : Miss "'+getKeyListResponse()+'" params in your response data'); 
+                    }else{
+                        callbackRequest(data[getKeyListResponse()],data[getKeyCountResponse()],page); 
+                    }
+                }).fail(function () {
+                    console.log('Fail on request');
+                });
             }else{
                 console.log('Request must be ajax or json');
             }
