@@ -330,7 +330,7 @@
                             data: getDataAjax()
                         }
                 ).done(function (data) {
-                    console.log('Done Ajax Request');
+                    console.dir(data);
                     if(!data[getKeyCountResponse()]){
                        console.log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
                     }else if(!data[getKeyListResponse()]){
