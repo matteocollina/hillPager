@@ -37,6 +37,8 @@
             ajax: {
                 "on":false,
                 "action":"/",
+                "key_list_response":"list", //key of response list , default (result.LIST)
+                "key_count_response":"count", //key of response count , default (result.COUNT)
                 "data":{},
                 "callback":function(){
                     console.log('Callback Default AJAX Request custom');
