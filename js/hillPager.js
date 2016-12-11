@@ -322,7 +322,8 @@
                     }
                 });
             }else if(isAjax()){
-                console.log('Calling ' + getAction() + ' With Data: ' + getDataAjax());
+                console.log('Calling ' + getAction() + ' With Data: ' );
+                console.dir(getDataAjax());
                 $.ajax(
                         {
                             method: "POST",
