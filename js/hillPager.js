@@ -329,6 +329,7 @@
                             data: getDataAjax()
                         }
                 ).done(function (data) {
+                    console.log('Done Ajax Request');
                     if(!data[getKeyCountResponse()]){
                        console.log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
                     }else if(!data[getKeyListResponse()]){
@@ -337,7 +338,7 @@
                         callbackRequest(data[getKeyListResponse()],data[getKeyCountResponse()],page); 
                     }
                 }).fail(function () {
-                    console.log('Fail on request');
+                    console.log('Fail Ajax Request');
                 });
             }else{
                 console.log('Request must be ajax or json');
