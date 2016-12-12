@@ -39,6 +39,8 @@
                 "action":"/",
                 "key_list_response":"list", //key of response list , default (result.LIST)
                 "key_count_response":"count", //key of response count , default (result.COUNT)
+                "start":{"on":true,"name":"start"}, //if you want to pass start to your service , "name": name of param
+                "limit":{"on":true,"name":"limit"}, //if you want to pass limit to your service , "name": name of param
                 "data":{},
                 "callback":function(){
                     console.log('Callback Default AJAX Request custom');
@@ -74,8 +76,21 @@
             return isAjax() ? pagers.getOptions().ajax.action 
                             : pagers.getOptions().json.action;
         };
-        var getDataAjax = function(){
-            return pagers.getOptions().ajax.data;
+        var getDataAjax = function(start,limit){
+            var data = JSON.parse(JSON.stringify(pagers.getOptions().ajax.data));
+            if(pagers.getOptions().ajax.start && pagers.getOptions().ajax.start.on){
+                var startObj = {};
+                startObj.name = pagers.getOptions().ajax.start.name;
+                startObj.value = start;
+                data.push(startObj);
+            }
+            if(pagers.getOptions().ajax.limit && pagers.getOptions().ajax.limit.on){
+                var limitObj = {};
+                limitObj.name = pagers.getOptions().ajax.limit.name;
+                limitObj.value = limit;
+                data.push(limitObj);
+            }
+            return data;
         };
         var getKeyListResponse = function(){
             return isAjax() ? pagers.getOptions().ajax.key_list_response 
@@ -96,8 +111,8 @@
             return start;
         };
         var getLimitRequest = function(page){
-            var limit = getStartRequest(page+1) -1;
-            return limit;
+            return isAjax() ? getStartRequest(page+1) 
+                            : getStartRequest(page+1)-1 ;
         };
         
         //get number of pages
@@ -107,7 +122,7 @@
         
         //get div that contains btns
         var getButtonPager = function (){
-            var pager = $(pagers.selector);
+            var pager = $('.'+pagers[0].className);
             
             var classPagerBtns = pagers.getOptions().classPager;
             var pagerBtns = $('.'+classPagerBtns);
@@ -323,15 +338,15 @@
                 });
             }else if(isAjax()){
                 console.log('Calling ' + getAction() + ' With Data: ' );
-                console.dir(getDataAjax());
+                console.dir(getDataAjax(start,limit));
                 $.ajax(
                         {
                             method: "POST",
                             url: getAction(),
-                            data: getDataAjax()
+                            data: getDataAjax(start,limit)
                         }
                 ).done(function (data) {
-                    console.dir(data);
+                    var data = $.parseJSON(data);
                     if(!data[getKeyCountResponse()]){
                        console.log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
                     }else if(!data[getKeyListResponse()]){
