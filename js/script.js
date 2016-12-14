@@ -15,6 +15,7 @@ $(document).ready(function () {
     
     //Example
     $('.hillPager').hillPager({
+        debug:true,
         classPager: 'pager', //class of pager 
         itemToShow: 10, // Item to show x page 
         goToFirst: true, // Btn go to first page 

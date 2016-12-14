@@ -25,6 +25,7 @@
 
         // setup options
         var defaultOptions = {
+            debug:false, // true : show all logs of plugin
             classPager: 'pager', //you can define the class of pager 
             itemToShow: 3, // Item to show x page 
             maxBtnToShow : 2, //Max quantity of button showed
@@ -44,7 +45,7 @@
                 "limit":{"on":true,"name":"limit"}, //if you want to pass limit to your service , "name": name of param
                 "data":{},
                 "callback":function(){
-                    console.log('Callback Default AJAX Request custom');
+                    log('Callback Default AJAX Request custom');
                 }
             }, 
             json: {
@@ -53,15 +54,24 @@
                 "key_list_response":"list", //key of response list , default (result.LIST)
                 "key_count_response":"count", //key of response count , default (result.COUNT)
                 "callback":function(){
-                    console.log('Callback Default JSON Request custom');
+                    log('Callback Default JSON Request custom');
                 }
             }
         };
         var options = $.extend({}, defaultOptions, pagerOptions);
+        
+        var log = function(text){
+            if(pagers.getOptions().debug)
+                console.log(text);
+        };
+        var logObj = function(obj){
+            if(pagers.getOptions().debug)
+                console.dir(obj);
+        };
 
         // SETUP private functions;
         var intialize = function () {
-            console.log('Init hillPager');
+            log('Init hillPager');
             pagers.changePage();
             return pagers;
         };
@@ -112,7 +122,7 @@
             return start;
         };
         var getLimitRequest = function(page){
-            return isAjax() ? getStartRequest(page+1) 
+            return isAjax() ? (pagers.getOptions().itemToShow) 
                             : getStartRequest(page+1)-1 ;
         };
         
@@ -311,8 +321,10 @@
             
             if(pagers.getOptions().pageOf.on){
                 var pageTitle = pagers.getOptions().pageOf.page,
-                    pageOf = pagers.getOptions().pageOf.of,   
-                    text = pageTitle + ' ' + (currentPage+1) + ' ' + pageOf + ' ' + getCountPages(count);
+                    pageOf = pagers.getOptions().pageOf.of,  
+                    text = getCountPages(count) != 0 
+                            ? pageTitle + ' ' + (currentPage+1) + ' ' + pageOf + ' ' + getCountPages(count)
+                            : 'Nessun elemento trovato';
                 getButtonPager().append('<p class="pageOf">'+text+'</p>');
             }
         };
@@ -333,10 +345,10 @@
                 //"list" : list of items
                 //"count" : count of all items not filtered
                 $.getJSON(getAction()).success(function (result) {
-                    if(!result[getKeyCountResponse()]){
-                       console.log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
-                    }else if(!result[getKeyListResponse()]){
-                       console.log('Error : Miss "'+getKeyListResponse()+'" params in your response data'); 
+                    if(result[getKeyCountResponse()] == null){
+                       log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
+                    }else if(result[getKeyListResponse()] == null){
+                       log('Error : Miss "'+getKeyListResponse()+'" params in your response data'); 
                     }else{
                         var list = [];
                         $.each(result[getKeyListResponse()], function (i, field) {
@@ -347,15 +359,15 @@
                         callbackRequest(list,result[getKeyCountResponse()],page); 
                         
                         if(pagers.getOptions().itemToShow > result[getKeyCountResponse()]){
-                           console.log('Notice : "itemToShow" > Response list length'); 
+                           log('Notice : "itemToShow" > Response list length'); 
                         }else if(pagers.getOptions().itemToShow == 0){
-                           console.log('"itemToShow" is set to 0'); 
+                           log('"itemToShow" is set to 0'); 
                         }
                     }
                 });
             }else if(isAjax()){
-                console.log('Calling ' + getAction() + ' With Data: ' );
-                console.dir(getDataAjax(start,limit));
+                log('Calling ' + getAction() + ' With Data: ' );
+                logObj(getDataAjax(start,limit));
                 $.ajax(
                         {
                             method: "POST",
@@ -364,18 +376,18 @@
                         }
                 ).done(function (data) {
                     var data = $.parseJSON(data);
-                    if(!data[getKeyCountResponse()]){
-                       console.log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
-                    }else if(!data[getKeyListResponse()]){
-                       console.log('Error : Miss "'+getKeyListResponse()+'" params in your response data'); 
+                    if(data[getKeyCountResponse()] == null){
+                       log('Error : Miss "'+getKeyCountResponse()+'" params in your response data'); 
+                    }else if(data[getKeyListResponse()] == null){
+                       log('Error : Miss "'+getKeyListResponse()+'" params in your response data'); 
                     }else{
                         callbackRequest(data[getKeyListResponse()],data[getKeyCountResponse()],page); 
                     }
                 }).fail(function () {
-                    console.log('Fail Ajax Request');
+                    log('Fail Ajax Request');
                 });
             }else{
-                console.log('Request must be ajax or json');
+                log('Request must be ajax or json');
             }
         };
 
