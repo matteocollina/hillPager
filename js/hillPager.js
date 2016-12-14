@@ -32,6 +32,7 @@
             goToLast: true, // Btn go to last page 
             next: true, // Btn go to next page 
             prev: true, // Btn go to previous page 
+            titleButtons:["<<","<",">",">>"], // << < > >> , if you want to customize titles of btns, if not keep empty
             pageStart: 0, //index of default page start (from 0)
             pageOf: {on:true,"page":"Page","of":"Of"}, //if you want to show page x of x
             ajax: {
@@ -154,6 +155,21 @@
         var resetButtonPager = function (){
             getButtonPager().children('.first,.prev,.next,.goToLast,.page,.other').remove();
         };
+        
+        //return title system btns
+        var titleSystemBtnOnIndex = function(index){
+            var title = pagers.getOptions().titleButtons[index];
+            if(title == ""){
+                switch(index){
+                    case 0 : title = "<<";break;
+                        case 1 : title = "<";break;
+                            case 2 : title = ">";break;
+                                case 3 : title = ">>";break;
+                }
+            }
+            return title;
+        };
+        
         //Logic setting buttons of pager:
         //count : tot items
         //currentPage : from 0 to count-1
@@ -175,7 +191,7 @@
             //1) go to first page btn
             var goToFirstBtn = getButtonPager().children('.first');
             if (goToFirst && goToFirstBtn.length == 0) {
-                getButtonPager().append('<button class="first">FIRST</button>');
+                getButtonPager().append('<button class="first">'+titleSystemBtnOnIndex(0)+'</button>');
                 goToFirstBtn = getButtonPager().children('.first');
                 
                 //action
@@ -189,7 +205,7 @@
             //2) go to previous page btn
             var prevBtn = getButtonPager().children('.prev');
             if (prev && prevBtn.length == 0) {
-                getButtonPager().append('<button class="prev">PREV</button>');
+                getButtonPager().append('<button class="prev">'+titleSystemBtnOnIndex(1)+'</button>');
                 prevBtn = getButtonPager().children('.prev');
                 
                 //action
@@ -223,12 +239,13 @@
                 }
                 
                 //SET ... on end
+                /*
                 var otherPrevNext = getButtonPager().children('.other-next');
                 if(numPagina == totPages-3 && otherPrevNext.length == 0){
                     var otherNext = $('<button class="other other-next">...</button>');
                     getButtonPager().append(otherNext);
                     otherPrevNext = getButtonPager().children('.other-next');
-                }
+                }*/
                 
                 //SET Style current page
                 page = $('[data-id="'+getIndexPage(page)+'"]');
@@ -242,7 +259,7 @@
             //3) go to next page
             var nextBtn = getButtonPager().children('.next');
             if (next && nextBtn.length == 0) {
-                getButtonPager().append('<button class="next">NEXT</button>');
+                getButtonPager().append('<button class="next">'+titleSystemBtnOnIndex(2)+'</button>');
                 nextBtn = getButtonPager().children('.next');
                 
                 //action
@@ -256,7 +273,7 @@
             //4) go to last page
             var goToLastBtn = getButtonPager().children('.goToLast');
             if (goToLast && goToLastBtn.length == 0) {
-                getButtonPager().append('<button class="goToLast">LAST</button>');
+                getButtonPager().append('<button class="goToLast">'+titleSystemBtnOnIndex(3)+'</button>');
                 goToLastBtn = getButtonPager().children('.goToLast');
                 
                 //action
