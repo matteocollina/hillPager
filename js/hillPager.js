@@ -295,7 +295,7 @@
             if(pagers.getOptions().pageOf.on){
                 var pageTitle = pagers.getOptions().pageOf.page,
                     pageOf = pagers.getOptions().pageOf.of,   
-                    text = pageTitle + ' ' + (currentPage+1) + ' ' + pageOf + ' ' + count;
+                    text = pageTitle + ' ' + (currentPage+1) + ' ' + pageOf + ' ' + getCountPages(count);
                 getButtonPager().append('<p class="pageOf">'+text+'</p>');
             }
         };
