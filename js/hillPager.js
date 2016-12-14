@@ -197,6 +197,7 @@
             
             var totPages = getCountPages(count),
                 maxBtnShow = pagers.getOptions().maxBtnToShow;
+            log('Tot pages : '+totPages);
 
             //1) go to first page btn
             var goToFirstBtn = getButtonPager().children('.first');
@@ -210,7 +211,7 @@
                      pagers.changePage(0);
                 });
             }
-            currentPage == 0 ? disableBtn(goToFirstBtn) : enableBtn(goToFirstBtn);
+            currentPage == 0 || totPages == 0 ? disableBtn(goToFirstBtn) : enableBtn(goToFirstBtn);
             
             //2) go to previous page btn
             var prevBtn = getButtonPager().children('.prev');
@@ -224,7 +225,7 @@
                      pagers.changePage(currentPage-1);
                 });
             }
-            currentPage == 0 ? disableBtn(prevBtn) : enableBtn(prevBtn);
+            currentPage == 0 || totPages == 0 ? disableBtn(prevBtn) : enableBtn(prevBtn);
 
 
             //pages
@@ -278,7 +279,7 @@
                      pagers.changePage(currentPage+1);
                 });
             }
-            currentPage == totPages-1 ? disableBtn(nextBtn) : enableBtn(nextBtn);
+            currentPage == totPages-1 || totPages == 0 ? disableBtn(nextBtn) : enableBtn(nextBtn);
             
             //4) go to last page
             var goToLastBtn = getButtonPager().children('.goToLast');
@@ -292,7 +293,7 @@
                      pagers.changePage(totPages-1);
                 });
             }
-            currentPage == totPages-1 ? disableBtn(goToLastBtn) : enableBtn(goToLastBtn);
+            currentPage == totPages-1 || totPages == 0 ? disableBtn(goToLastBtn) : enableBtn(goToLastBtn);
         };
         var enableBtn = function(btn){
             stateBtn(btn,true);
