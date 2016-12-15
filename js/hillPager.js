@@ -32,7 +32,8 @@
             goToFirst: true, // Btn go to first page 
             goToLast: true, // Btn go to last page 
             next: true, // Btn go to next page 
-            prev: true, // Btn go to previous page 
+            prev: true, // Btn go to previous page
+            hideButtons:false, //when return 0 items, hide buttons and title
             titleButtons:["<<","<",">",">>"], // << < > >> , if you want to customize titles of btns, if not keep empty
             pageStart: 0, //index of default page start (from 0)
             pageOf: {on:true,"page":"Page","of":"Of"}, //if you want to show page x of x
@@ -327,6 +328,12 @@
                             ? pageTitle + ' ' + (currentPage+1) + ' ' + pageOf + ' ' + getCountPages(count)
                             : 'Nessun elemento trovato';
                 getButtonPager().append('<p class="pageOf">'+text+'</p>');
+            }
+            
+            if(pagers.getOptions().hideButtons && getCountPages(count)==0){
+                getButtonPager().hide();
+            }else{
+                getButtonPager().show();
             }
         };
 

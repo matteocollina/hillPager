@@ -23,6 +23,7 @@ $(document).ready(function () {
         next: true, // Btn go to next page 
         prev: true, // Btn go to previous page 
         titleButtons:["Primo","Precedente","Prossimo","Ultimo"],
+        hideButtons:false,
         pageOf: {on:true,"page":"Pagina","of":"di"},
         ajax: {
                 "on":false,
