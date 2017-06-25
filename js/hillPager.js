@@ -28,7 +28,7 @@
             debug:false, // true : show all logs of plugin
             classPager: 'pager', //you can define the class of pager 
             itemToShow: 3, // Item to show x page 
-            maxBtnToShow : 2, //Max quantity of button showed
+            maxBtnToShow : null, //Max quantity of button showed (default: not activated). ONLY value != %2 = 0
             goToFirst: true, // Btn go to first page 
             goToLast: true, // Btn go to last page 
             next: true, // Btn go to next page 
@@ -180,6 +180,7 @@
             }
             return title;
         };
+       
         
         //Logic setting buttons of pager:
         //count : tot items
@@ -237,12 +238,14 @@
                 //SET ... on start
                 /*
                 var otherPrevBtn = getButtonPager().children('.other-prev');
-                if(numPagina > 0 && otherPrevBtn.length == 0){
+                if(currentPage >= (maxBtnShow-1) &&
+                   totPages > maxBtnShow && 
+                   otherPrevBtn.length == 0){
                     var otherPrev = $('<button class="other other-prev">...</button>');
                     getButtonPager().append(otherPrev);
                     otherPrevBtn = getButtonPager().children('.other-prev');
-                }
-                */
+                }*/
+                
 
                 var page = $('<button class="page" data-id="' + numPagina + '">' + titlePagina + '</button>');
                 if (!existPage(page)) {

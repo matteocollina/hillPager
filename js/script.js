@@ -4,20 +4,12 @@
  * and open the template in the editor.
  */
 
-
-$(window).load(function() {
-    //console.log('Page is Loaded');
-});
-
-
 $(document).ready(function () {
-    
-    
     //Example
     $('.hillPager').hillPager({
         debug:true,
         classPager: 'pager', //class of pager 
-        itemToShow: 10, // Item to show x page 
+        itemToShow: 3, // Item to show x page 
         goToFirst: true, // Btn go to first page 
         goToLast: true, // Btn go to last page 
         next: true, // Btn go to next page 
@@ -26,7 +18,7 @@ $(document).ready(function () {
         hideButtons:false,
         pageOf: {on:true,"page":"Pagina","of":"di"},
         ajax: {
-                "on":false,
+                "on":false
         }, 
         json: {
                 "on":true,
@@ -46,13 +38,6 @@ $(document).ready(function () {
                 }
         }
     });
-    
-   
-   
-   
-   
-   
-
 });
 
 

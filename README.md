@@ -2,7 +2,7 @@
 A simple pager.
 
 Default options:
-
+```
 var defaultOptions = {
             debug:false, // true : show all logs of plugin
             classPager: 'pager', //you can define the class of pager 
@@ -37,3 +37,4 @@ var defaultOptions = {
                 }
             }
         };
+```
